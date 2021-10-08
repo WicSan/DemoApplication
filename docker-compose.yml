@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  registry:
+    restart: always
+    image: registry:2
+    ports:
+      - 5000:5000
+    environment:
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/registry.crt
+      REGISTRY_HTTP_TLS_KEY: /certs/registry.key
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+    volumes:
+      - ./dockerregistry/data:/var/lib/registry
+      - ./dockerregistry/certs:/certs
+      - ./dockerregistry/auth:/auth
+    networks:
+      - default
+
+  agent:
+    image: dockeragent:latest
+    environment:
+      AZP_URL: https://dev-ops.azure.local/DefaultCollection
+      AZP_TOKEN: iilxozaek4ycx6j4ixnyei7sz2jej6gzcxvqzscluz4obyzl3ktq
+      AZP_AGENT_NAME: dockeragent
+      AZP_POOL: Self-Hosted
+      AZP_AGENT_DOWNGRADE_DISABLED: "true"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks: 
+      default:
+        aliases:
+          - registry.docker.local
+
+networks:
+  default:

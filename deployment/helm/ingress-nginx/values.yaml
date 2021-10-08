@@ -1,0 +1,12 @@
+defaultBackend:
+  enabled: true
+
+  name: defaultbackend
+  image:
+    repository: default-backend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+    runAsUser: 0
+    runAsNonRoot: false
+    readOnlyRootFilesystem: false
+    allowPrivilegeEscalation: false
