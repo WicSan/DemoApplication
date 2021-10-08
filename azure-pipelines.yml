@@ -19,4 +19,4 @@ steps:
     containerRegistry: 'Local docker registry'
     repository: '$(imageName)'
     command: 'buildAndPush'
-    Dockerfile: '**/Dockerfile'
+    Dockerfile: 'DemoApplication/Dockerfile'
