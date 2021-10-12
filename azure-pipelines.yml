@@ -20,3 +20,10 @@ steps:
     repository: '$(imageName)'
     command: 'buildAndPush'
     Dockerfile: 'DemoApplication/Dockerfile'
+
+- task: HelmDeploy@0
+  displayName: Helm package
+  inputs:
+    command: 'package'
+    chartPath: 'deployment/helm/demo-application'
+
