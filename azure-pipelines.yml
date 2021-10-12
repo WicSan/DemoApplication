@@ -28,3 +28,7 @@ steps:
     chartPath: 'deployment/helm/demo-application'
     destination: '/helm/charts'
 
+- task: CmdLine@2
+  inputs:
+    script: 'curl -X POST http://localhost:8080/api/packages/raw -H "X-Octopus-ApiKey: $(octopus-api-key)" -F "data=@demo-application-0.1.0.tgz"'
+    workingDirectory: '/helm/charts'
