@@ -26,10 +26,10 @@ steps:
   inputs:
     command: 'package'
     chartPath: 'deployment/helm/demo-application'
-    destination: '/helm/charts'
+    destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
 
 - script: 'curl -X POST http://repo-octopus-server-1:8080/api/packages/raw -H "X-Octopus-ApiKey: ${OctopusApiKey}" -F "data=@demo-application-0.1.0.tgz"'
-  workingDirectory: '/helm/charts'
+  workingDirectory: '$(Build.ArtifactStagingDirectory)/helm/charts'
   env:
     OctopusApiKey: $(octopus-api-key)
   
