@@ -21,7 +21,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl -LsS https://aka.ms/InstallAzureCLIDeb | bash \
   && rm -rf /var/lib/apt/lists/*
 
+# install docker
 RUN curl -fsSL https://get.docker.com | bash
+
+# install helm
+RUN curl https://baltocdn.com/helm/signing.asc | apt-key add -
+RUN apt-get install apt-transport-https --yes
+RUN echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list
+RUN apt-get update
+RUN apt-get install helm
 
 ARG TARGETARCH=amd64
 ARG AGENT_VERSION=2.185.1

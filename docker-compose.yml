@@ -15,23 +15,55 @@ services:
       - ./dockerregistry/data:/var/lib/registry
       - ./dockerregistry/certs:/certs
       - ./dockerregistry/auth:/auth
-    networks:
-      - default
-
-  agent:
-    image: dockeragent:latest
-    environment:
-      AZP_URL: https://dev-ops.azure.local/DefaultCollection
-      AZP_TOKEN: iilxozaek4ycx6j4ixnyei7sz2jej6gzcxvqzscluz4obyzl3ktq
-      AZP_AGENT_NAME: dockeragent
-      AZP_POOL: Self-Hosted
-      AZP_AGENT_DOWNGRADE_DISABLED: "true"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
     networks: 
       default:
         aliases:
           - registry.docker.local
 
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: Passw0rd!
+      ACCEPT_EULA: 'Y'
+    ports:
+      - 1433:1433
+    healthcheck:
+      test: [ "CMD", "/opt/mssql-tools/bin/sqlcmd", "-U", "sa", "-P", "Passw0rd!", "-Q", "select 1"]
+      interval: 10s
+      retries: 10
+    volumes:
+      - sqlvolume:/var/opt/mssql
+  octopus-server:
+    build: ./octopus
+    privileged: false
+    user: root
+    environment:
+      ACCEPT_EULA: 'Y'
+      OCTOPUS_SERVER_NODE_NAME: octopus_test
+      ADMIN_USERNAME: admin
+      ADMIN_PASSWORD: Passw0rd!
+      MASTER_KEY: fnzv1XVQcLldR4BJzAvvTw==
+      DB_CONNECTION_STRING: Server=db,1433;Database=OctopusDeploy;User=sa;Password=Passw0rd!
+      DISABLE_DIND: 'N'
+    ports:
+      - 8080:8080
+      - 11111:10943
+    depends_on:
+      - db
+    volumes:
+      - repository:/repository
+      - artifacts:/artifacts
+      - taskLogs:/taskLogs
+      - cache:/cache
+      - import:/import
+
 networks:
   default:
+
+volumes:
+  repository:
+  artifacts:
+  taskLogs:
+  cache:
+  import:
+  sqlvolume:

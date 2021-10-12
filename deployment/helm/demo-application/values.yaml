@@ -8,7 +8,7 @@ image:
   repository: registry.docker.local:5000/demo-application
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "27"
+  tag: "32"
 
 imagePullSecrets: 
   - name: regcred
