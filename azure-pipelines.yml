@@ -41,8 +41,9 @@ steps:
     destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
     arguments: '--app-version $(GitVersion.SemVer)'
 
-- script: 'curl -f -X POST http://repo-octopus-server-1:8080/api/packages/raw -H "X-Octopus-ApiKey: ${OctopusApiKey}" -F "data=@demo-application-$(GitVersion.SemVer).tgz"'
-  workingDirectory: '$(Build.ArtifactStagingDirectory)/helm/charts'
-  env:
-    OctopusApiKey: $(octopus-api-key)
-  
+- task: OctopusPush@4
+  inputs:
+    OctoConnectedServiceName: 'Local octopus server'
+    Space: 'Spaces-1'
+    Package: '$(Build.ArtifactStagingDirectory)/helm/charts/*.tgz'
+    Replace: 'false'
