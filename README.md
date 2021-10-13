@@ -1,5 +1,11 @@
 # DemoApplication
 
+## Setup azure devops
+
+- API token for agent
+- Variable for octopus
+- Docker service connection (Port: 5000)
+
 ## Azure devops server self-hosted agent
 
 Build agent:
@@ -9,7 +15,7 @@ docker build -t dockeragent:latest .
 
 Start docker agent **(This in the docker-compose as well)**:
 ```
-docker run -e AZP_URL="https://dev-ops.azure.local/DefaultCollection" -e AZP_TOKEN="iilxozaek4ycx6j4ixnyei7sz2jej6gzcxvqzscluz4obyzl3ktq" -e AZP_AGENT_NAME=dockeragent -e AZP_POOL=Self-Hosted -e AZP_AGENT_DOWNGRADE_DISABLED=true -d -v /var/run/docker.sock:/var/run/docker.sock --privileged --name dockeragent dockeragent:latest
+docker run -e AZP_URL="https://dev-ops.azure.local/DefaultCollection" -e AZP_TOKEN="mpxqau7neidswiurn7hmmznvkufhvdttbvf54nvbnsyi6svxw3ia" -e AZP_AGENT_NAME=dockeragent -e AZP_POOL=Self-Hosted -e AZP_AGENT_DOWNGRADE_DISABLED=true -d -v /var/run/docker.sock:/var/run/docker.sock --network=repo_default --privileged --name dockeragent dockeragent:latest
 ```
 
 [Link to source](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops)
