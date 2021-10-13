@@ -46,4 +46,14 @@ steps:
     OctoConnectedServiceName: 'Local octopus server'
     Space: 'Spaces-1'
     Package: '$(Build.ArtifactStagingDirectory)/helm/charts/*.tgz'
-    Replace: 'false'
+    Replace: 'IgnoreIfExists'
+
+- task: OctopusCreateRelease@4
+  inputs:
+    OctoConnectedServiceName: 'Local octopus server'
+    Space: 'Spaces-1'
+    ProjectGroup: 'ProjectGroups-1'
+    ProjectName: 'Projects-1'
+    ReleaseNumber: '$(GitVersion.SemVer)'
+    Channel: 'Channels-1'
+    DeployToEnvironment: 'Environments-1'
