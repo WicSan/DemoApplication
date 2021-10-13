@@ -15,26 +15,29 @@ variables:
 steps:
 
 - task: gitversion/setup@0
+  displayName: Install GitVersion
   inputs:
     versionSpec: '5.x'
+
+- task: gitversion/execute@0
+  displayName: Determine Version
 
 - task: Docker@2
   inputs:
     containerRegistry: 'Local docker registry'
-    repository: '$(imageName)'
+    repository: '$(imageName):$(GitVersion.SemVer)'
     command: 'buildAndPush'
     Dockerfile: 'DemoApplication/Dockerfile'
-    versioningScheme: byEnvVar
-    versionEnvVar: 'GitVersion.SemVer'
 
 - task: HelmDeploy@0
   displayName: Helm package
   inputs:
     command: 'package'
     chartPath: 'deployment/helm/demo-application'
+    chartVersion: '$(GitVersion.SemVer)'
     destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
 
-- script: 'curl -X POST http://repo-octopus-server-1:8080/api/packages/raw -H "X-Octopus-ApiKey: ${OctopusApiKey}" -F "data=@demo-application-0.1.0.tgz"'
+- script: 'curl -X POST http://repo-octopus-server-1:8080/api/packages/raw -H "X-Octopus-ApiKey: ${OctopusApiKey}" -F "data=@demo-application-$(GitVersion.SemVer).tgz"'
   workingDirectory: '$(Build.ArtifactStagingDirectory)/helm/charts'
   env:
     OctopusApiKey: $(octopus-api-key)
