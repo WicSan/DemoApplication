@@ -25,9 +25,10 @@ steps:
 - task: Docker@2
   inputs:
     containerRegistry: 'Local docker registry'
-    repository: '$(imageName):$(GitVersion.SemVer)'
+    repository: '$(imageName)'
     command: 'buildAndPush'
     Dockerfile: 'DemoApplication/Dockerfile'
+    tags: '$(GitVersion.SemVer)'
 
 - task: HelmDeploy@0
   displayName: Helm package
