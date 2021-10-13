@@ -14,12 +14,18 @@ variables:
 
 steps:
 
+- task: gitversion/setup@0
+  inputs:
+    versionSpec: '5.x'
+
 - task: Docker@2
   inputs:
     containerRegistry: 'Local docker registry'
     repository: '$(imageName)'
     command: 'buildAndPush'
     Dockerfile: 'DemoApplication/Dockerfile'
+    versioningScheme: byEnvVar
+    versionEnvVar: 'GitVersion.SemVer'
 
 - task: HelmDeploy@0
   displayName: Helm package
