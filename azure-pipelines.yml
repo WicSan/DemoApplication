@@ -39,6 +39,7 @@ steps:
     chartPath: 'deployment/helm/demo-application'
     chartVersion: '$(GitVersion.SemVer)'
     destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
+    arguments: '--app-version $(GitVersion.SemVer)'
 
 - script: 'curl -X POST http://repo-octopus-server-1:8080/api/packages/raw -H "X-Octopus-ApiKey: ${OctopusApiKey}" -F "data=@demo-application-$(GitVersion.SemVer).tgz"'
   workingDirectory: '$(Build.ArtifactStagingDirectory)/helm/charts'
