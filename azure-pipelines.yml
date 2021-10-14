@@ -30,16 +30,16 @@ steps:
     repository: '$(imageName)'
     command: 'buildAndPush'
     Dockerfile: 'DemoApplication/Dockerfile'
-    tags: '$(GitVersion.SemVer)'
+    tags: $[replace(variables['GitVersion.FullSemVer'], '+', '_')]
 
 - task: HelmDeploy@0
   displayName: Helm package
   inputs:
     command: 'package'
     chartPath: 'deployment/helm/demo-application'
-    chartVersion: '$(GitVersion.SemVer)'
+    chartVersion: '$(GitVersion.FullSemVer)'
     destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
-    arguments: '--app-version $(GitVersion.SemVer)'
+    arguments: '--app-version $(GitVersion.FullSemVer)'
 
 - task: OctopusPush@4
   inputs:
@@ -54,5 +54,5 @@ steps:
     Space: 'Spaces-1'
     ProjectGroup: 'ProjectGroups-1'
     ProjectName: 'Projects-1'
-    ReleaseNumber: '$(GitVersion.SemVer)'
+    ReleaseNumber: '$(GitVersion.FullSemVer)'
     Channel: 'Channels-1'
