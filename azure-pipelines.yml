@@ -37,7 +37,7 @@ steps:
     repository: '$(imageName)'
     command: 'buildAndPush'
     Dockerfile: 'DemoApplication/Dockerfile'
-    tags: $[replace(variables['GitVersion.FullSemVer'], '+', '_')]
+    tags: '$(fullSemVer)'
 
 - task: HelmDeploy@0
   displayName: Helm package
