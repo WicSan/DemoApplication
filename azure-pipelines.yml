@@ -13,7 +13,6 @@ pool:
 
 variables:
   imageName: 'demo-application'
-  GitVersion.FullSemVer: ''
 
 stages:
 - stage: Setup
@@ -42,6 +41,7 @@ stages:
   - job: Application
     variables:
       dockertag: $[ replace(stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'], '+', '_') ]
+      fullSemVer: $[ stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'] ]
     steps:
     - task: Docker@2
       inputs:
@@ -51,17 +51,12 @@ stages:
         Dockerfile: 'DemoApplication/Dockerfile'
         tags: '$(dockertag)'
 
-  - job: Helm
-    dependsOn: Application
-    variables:
-      dockertag: $[ replace(stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'], '+', '_') ]
-    steps:
     - task: HelmDeploy@0
       displayName: Helm package
       inputs:
         command: 'package'
         chartPath: 'deployment/helm/demo-application'
-        chartVersion: '$(GitVersion.FullSemVer)'
+        chartVersion: '$(FullSemVer)'
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
         arguments: '--app-version $(dockertag)'
 
@@ -79,6 +74,8 @@ stages:
 
   - job: Release
     dependsOn: Push
+    variables:
+      fullSemVer: $[ stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'] ]
     steps:
     - task: OctopusCreateRelease@4
       displayName: Master release
@@ -88,7 +85,7 @@ stages:
         Space: 'Spaces-1'
         ProjectGroup: 'ProjectGroups-1'
         ProjectName: 'Projects-1'
-        ReleaseNumber: '$(GitVersion.FullSemVer)'
+        ReleaseNumber: '$(fullSemVer)'
         Channel: 'Channels-1'
         
     - task: OctopusCreateRelease@4
@@ -99,5 +96,5 @@ stages:
         Space: 'Spaces-1'
         ProjectGroup: 'ProjectGroups-1'
         ProjectName: 'Projects-1'
-        ReleaseNumber: '$(GitVersion.FullSemVer)'
+        ReleaseNumber: '$(fullSemVer)'
         Channel: 'Channels-21'
