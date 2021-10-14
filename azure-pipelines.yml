@@ -41,7 +41,7 @@ stages:
   jobs:
   - job: Application
     variables:
-      dockertag: $[ replace($(Build.BuildNumber), '+', '_') ]
+      dockertag: $[ replace(stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'], '+', '_') ]
     steps:
     - task: Docker@2
       inputs:
