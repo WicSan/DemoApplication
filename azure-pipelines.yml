@@ -53,7 +53,7 @@ stages:
         tags: '$(dockertag)'
 
   - job: Helm
-    dependsOn: Build
+    dependsOn: Application
     steps:
     - task: HelmDeploy@0
       displayName: Helm package
