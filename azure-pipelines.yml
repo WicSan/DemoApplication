@@ -41,7 +41,7 @@ stages:
   jobs:
   - job: Application
     variables:
-      fullSemVer: $[ stageDependencies.Setup.Git.outputs ]
+      fullSemVer: $[ stageDependencies.Setup.Git.outputs['GitVersion'] ]
       dockertag: $[ stageDependencies.Setup.Git.outputs['GitVersion.FullSemVer'] ]
     steps:
     - task: Docker@2
