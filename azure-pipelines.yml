@@ -17,21 +17,8 @@ variables:
 stages:
 - stage: Setup
   jobs:
-    - job: Env
-      steps:
-      - task: Bash@3
-        displayName: Print environment
-        inputs:
-          targetType: 'inline'
-          script: env | sort
-
     - job: Git
       steps:
-      - task: Bash@3
-        displayName: Print environment
-        inputs:
-          targetType: 'inline'
-          script: env | sort
 
       - task: gitversion/setup@0
         displayName: Install GitVersion
@@ -42,11 +29,19 @@ stages:
         displayName: Determine Version
         name: GitVersion
 
+    - job: Env
+      steps:
+      - task: Bash@3
+        displayName: Print environment
+        inputs:
+          targetType: 'inline'
+          script: env | sort
+
 - stage: Build
   jobs:
   - job: Application
     variables:
-      fullSemVer: $[ stageDependencies.Setup.Git.outputs['GitVersion.FullSemVer'] ]
+      fullSemVer: $[ stageDependencies.Setup.Git.outputs ]
       dockertag: $[ stageDependencies.Setup.Git.outputs['GitVersion.FullSemVer'] ]
     steps:
     - task: Docker@2
@@ -58,6 +53,7 @@ stages:
         tags: '$(dockertag)'
 
   - job: Helm
+    dependsOn: Build
     steps:
     - task: HelmDeploy@0
       displayName: Helm package
@@ -81,7 +77,7 @@ stages:
           Replace: 'true'
 
   - job: Release
-    
+    dependsOn: Push
     steps:
     - task: OctopusCreateRelease@4
       displayName: Master release
