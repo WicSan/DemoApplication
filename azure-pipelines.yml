@@ -37,7 +37,6 @@ stages:
           script: env | sort
 
 - stage: Build
-  para
   jobs:
   - job: Application
     variables:
