@@ -101,7 +101,7 @@ stages:
         Space: 'Spaces-1'
         ProjectGroup: 'ProjectGroups-1'
         ProjectName: 'Projects-1'
-        ReleaseNumber: '$(fullSemVer)'
+        ReleaseNumber: '$(Build.BuildNumber)'
         Channel: 'Channels-1'
         
     - task: OctopusCreateRelease@4
@@ -112,5 +112,5 @@ stages:
         Space: 'Spaces-1'
         ProjectGroup: 'ProjectGroups-1'
         ProjectName: 'Projects-1'
-        ReleaseNumber: '$(fullSemVer)'
+        ReleaseNumber: '$(Build.BuildNumber)'
         Channel: 'Channels-21'
