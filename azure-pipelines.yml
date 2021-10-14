@@ -71,11 +71,14 @@ stages:
   - job: Push
     steps:
     - checkout: none
-    - task: DownloadPipelineArtifact@2
+    - task: DownloadBuildArtifacts@0
       inputs:
-        artifact: 'helm'
-        patterns: '**/*.tgz'
-        path: $(Build.ArtifactStagingDirectory)/helm
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'helm'
+        itemPattern: '**/*.tgz'
+        downloadPath: '$(System.ArtifactsDirectory)/helm'
+        
     - task: OctopusPush@4
       displayName: Ocotopus push
       inputs:
