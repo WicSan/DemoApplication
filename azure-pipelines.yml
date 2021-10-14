@@ -58,7 +58,7 @@ stages:
         command: 'package'
         chartPath: 'deployment/helm/demo-application'
         chartVersion: '$(FullSemVer)'
-        destination: '/temp/helm/charts'
+        destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
         arguments: '--app-version $(dockertag)'
     - task: PublishBuildArtifacts@1
       inputs:
