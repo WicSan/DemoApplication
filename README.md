@@ -68,3 +68,6 @@ Can be used as a worker:
 ```
 docker run --publish 10931:10933 --tty --interactive --network="repo_default" --env "ListeningPort=10931" --env "ServerApiKey=API-ZTEOSMZPURXPFBF6CKDLI7WNUKDR8A" --env "TargetEnvironment=Dev" --env "TargetRole=app-server" --env "ServerUrl=http://repo-octopus-server-1:8080" --env "ACCEPT_EULA=Y" octopusdeploy/tentacle
 ```
+
+## Octopus retention
+Runs every four hours. Can be adjust on the lifecycle or and each individual phase.
