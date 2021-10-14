@@ -41,7 +41,7 @@ stages:
   jobs:
   - job: Application
     variables:
-      dockertag: $[ replace(variables['Build.BuildNumber'], '+', '_') ]
+      dockertag: $[ replace($(Build.BuildNumber), '+', '_') ]
     steps:
     - task: Docker@2
       inputs:
