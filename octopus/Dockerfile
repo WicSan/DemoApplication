@@ -1,4 +1,5 @@
-FROM octopusdeploy/octopusdeploy:2020.6
+# 2021.2 is needed because of a bugfix with the kubectl.config permssions
+FROM octopusdeploy/octopusdeploy:2021.2
 
 # install kubectl
 RUN curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
