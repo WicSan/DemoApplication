@@ -15,7 +15,7 @@ variables:
   imageName: 'demo-application'
 
 stages:
-- stage: Setup env
+- stage: Setup
   jobs:
     - job:
       steps:
@@ -61,7 +61,7 @@ stages:
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
         arguments: '--app-version $(dockertag)'
 
-- stage: Push and create release
+- stage: PushChartAndCreateRelease
   jobs:
   - job: Push
     steps:
