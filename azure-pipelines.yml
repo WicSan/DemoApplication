@@ -19,6 +19,7 @@ variables:
 steps:
 
 - task: Bash@3
+  displayName: Print environment
   inputs:
     targetType: 'inline'
     script: env | sort
@@ -30,6 +31,10 @@ steps:
 
 - task: gitversion/execute@0
   displayName: Determine Version
+
+- bash: |
+      compatibaleFullSemVer=${$(GitVersion.FullSemVer)/+/_}
+      echo "##vso[task.setvariable variable=compatibaleFullSemVer]$compatibaleFullSemVer"
 
 - task: Docker@2
   inputs:
