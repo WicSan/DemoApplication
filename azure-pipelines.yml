@@ -13,6 +13,8 @@ pool:
 
 variables:
   imageName: 'demo-application'
+  dockerSemVer: $[replace(variables['GitVersion.FullSemVer'], '+', '_')]
+
 
 steps:
 
@@ -30,7 +32,7 @@ steps:
     repository: '$(imageName)'
     command: 'buildAndPush'
     Dockerfile: 'DemoApplication/Dockerfile'
-    tags: $[replace(variables['GitVersion.FullSemVer'], '+', '_')]
+    tags: $(dockerSemVer)
 
 - task: HelmDeploy@0
   displayName: Helm package
