@@ -67,3 +67,14 @@ steps:
     ProjectName: 'Projects-1'
     ReleaseNumber: '$(GitVersion.FullSemVer)'
     Channel: 'Channels-1'
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+
+- task: OctopusCreateRelease@4
+  inputs:
+    OctoConnectedServiceName: 'Local octopus server'
+    Space: 'Spaces-1'
+    ProjectGroup: 'ProjectGroups-1'
+    ProjectName: 'Projects-1'
+    ReleaseNumber: '$(GitVersion.FullSemVer)'
+    Channel: 'Channels-21'
+    condition: not(eq(variables['Build.SourceBranch'], 'refs/heads/master'))
