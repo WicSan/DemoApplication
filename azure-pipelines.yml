@@ -19,7 +19,6 @@ stages:
   jobs:
     - job: Git
       steps:
-
       - task: gitversion/setup@0
         displayName: Install GitVersion
         inputs:
@@ -28,6 +27,9 @@ stages:
       - task: gitversion/execute@0
         displayName: Determine Version
         name: GitVersion
+        
+      - bash: echo "##vso[task.setvariable variable=test;isOutput=true]Hello"
+        name: output
 
     - job: Env
       steps:
@@ -41,6 +43,7 @@ stages:
   jobs:
   - job: Application
     variables:
+      test: $[ stageDependencies.Setup.Git.outputs['output.test'] ]
       fullSemVer: $[ stageDependencies.Setup.Git.outputs['GitVersion'] ]
       dockertag: $[ stageDependencies.Setup.Git.outputs['GitVersion.FullSemVer'] ]
     steps:
