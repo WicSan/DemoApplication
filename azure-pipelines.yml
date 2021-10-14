@@ -13,6 +13,7 @@ pool:
 
 variables:
   imageName: 'demo-application'
+  GitVersion.FullSemVer: ''
 
 stages:
 - stage: Setup
@@ -26,7 +27,7 @@ stages:
 
       - task: gitversion/execute@0
         displayName: Determine Version
-        name: Metadata
+        name: Output
 
     - job: Env
       steps:
@@ -40,8 +41,7 @@ stages:
   jobs:
   - job: Application
     variables:
-      fullSemVer: $[ stageDependencies.Setup.Git.outputs['Metadata.GitVersion.FullSemVer'] ]
-      dockertag: $[ stageDependencies.Setup.Git.outputs['GitVersion.FullSemVer'] ]
+      dockertag: $[ stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'] ]
     steps:
     - task: Docker@2
       inputs:
@@ -53,6 +53,8 @@ stages:
 
   - job: Helm
     dependsOn: Application
+    variables:
+      fullSemVer: $[ stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'] ]
     steps:
     - task: HelmDeploy@0
       displayName: Helm package
@@ -86,7 +88,7 @@ stages:
         Space: 'Spaces-1'
         ProjectGroup: 'ProjectGroups-1'
         ProjectName: 'Projects-1'
-        ReleaseNumber: '$(fullSemVer)'
+        ReleaseNumber: '$(GitVersion.FullSemVer)'
         Channel: 'Channels-1'
         
     - task: OctopusCreateRelease@4
@@ -97,5 +99,5 @@ stages:
         Space: 'Spaces-1'
         ProjectGroup: 'ProjectGroups-1'
         ProjectName: 'Projects-1'
-        ReleaseNumber: '$(fullSemVer)'
+        ReleaseNumber: '$(GitVersion.FullSemVer)'
         Channel: 'Channels-21'
