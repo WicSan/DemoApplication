@@ -13,7 +13,7 @@ pool:
 
 variables:
   imageName: 'demo-application'
-  dockerSemVer: $[replace(variables['GitVersion.FullSemVer'], '+', '_')]
+  dockerSemVer: $[replace(variables['Build.BuildNumber'], '+', '_')]
 
 steps:
 
