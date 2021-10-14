@@ -20,7 +20,7 @@ steps:
 - task: Bash@3
   inputs:
     targetType: 'inline'
-    script: echo '$(dockerSemVer)'
+    script: env | sort
 
 - task: gitversion/setup@0
   displayName: Install GitVersion
