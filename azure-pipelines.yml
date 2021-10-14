@@ -30,6 +30,7 @@ stages:
 
     - job: Env
       steps:
+      - checkout: none
       - task: Bash@3
         displayName: Print environment
         inputs:
@@ -57,37 +58,38 @@ stages:
         command: 'package'
         chartPath: 'deployment/helm/demo-application'
         chartVersion: '$(FullSemVer)'
-        destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
+        destination: '/temp/helm/charts'
         arguments: '--app-version $(dockertag)'
-
-    - task: PublishPipelineArtifact@1
+    - task: PublishBuildArtifacts@1
       inputs:
-        targetPath: '$(Build.ArtifactStagingDirectory)/helm'
-        artifact: 'helm'
-        publishLocation: 'pipeline'
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/helm'
+        ArtifactName: 'helm'
+        publishLocation: 'Container'
 
 - stage: PushChartAndCreateRelease
   jobs:
   - job: Push
     steps:
-      - task: DownloadPipelineArtifact@2
-        inputs:
-          artifact: WebApp
-          patterns: '**/*.js'
-          path: $(Build.ArtifactStagingDirectory)/helm
-      - task: OctopusPush@4
-        displayName: Ocotopus push
-        inputs:
-          OctoConnectedServiceName: 'Local octopus server'
-          Space: 'Spaces-1'
-          Package: '$(Build.ArtifactStagingDirectory)/helm/charts/*.tgz'
-          Replace: 'true'
+    - checkout: none
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        artifact: 'helm'
+        patterns: '**/*.tgz'
+        path: $(Build.ArtifactStagingDirectory)/helm
+    - task: OctopusPush@4
+      displayName: Ocotopus push
+      inputs:
+        OctoConnectedServiceName: 'Local octopus server'
+        Space: 'Spaces-1'
+        Package: '$(Build.ArtifactStagingDirectory)/helm/charts/*.tgz'
+        Replace: 'true'
 
   - job: Release
     dependsOn: Push
     variables:
       fullSemVer: $[ stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'] ]
     steps:
+    - checkout: none
     - task: OctopusCreateRelease@4
       displayName: Master release
       condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
