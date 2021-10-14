@@ -17,7 +17,15 @@ variables:
 stages:
 - stage: Setup
   jobs:
-    - job:
+    - job: Env
+      steps:
+      - task: Bash@3
+        displayName: Print environment
+        inputs:
+          targetType: 'inline'
+          script: env | sort
+
+    - job: Git
       steps:
       - task: Bash@3
         displayName: Print environment
@@ -32,15 +40,14 @@ stages:
 
       - task: gitversion/execute@0
         displayName: Determine Version
-
-      - bash: |
-            temp=$(echo '$(GitVersion.FullSemVer)' | sed 's/+/_/g')
-            echo "##vso[task.setvariable variable=dockertag]$temp"
-        displayName: Generate dockertag
+        name: GitVersion
 
 - stage: Build
   jobs:
   - job: Application
+    variables:
+      fullSemVer: $[ stageDependencies.Setup.Git.outputs['GitVersion.FullSemVer'] ]
+      dockertag: $[ stageDependencies.Setup.Git.outputs['GitVersion.FullSemVer'] ]
     steps:
     - task: Docker@2
       inputs:
@@ -57,7 +64,7 @@ stages:
       inputs:
         command: 'package'
         chartPath: 'deployment/helm/demo-application'
-        chartVersion: '$(GitVersion.FullSemVer)'
+        chartVersion: '$(fullSemVer)'
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
         arguments: '--app-version $(dockertag)'
 
@@ -84,7 +91,7 @@ stages:
         Space: 'Spaces-1'
         ProjectGroup: 'ProjectGroups-1'
         ProjectName: 'Projects-1'
-        ReleaseNumber: '$(GitVersion.FullSemVer)'
+        ReleaseNumber: '$(fullSemVer)'
         Channel: 'Channels-1'
         
     - task: OctopusCreateRelease@4
@@ -95,5 +102,5 @@ stages:
         Space: 'Spaces-1'
         ProjectGroup: 'ProjectGroups-1'
         ProjectName: 'Projects-1'
-        ReleaseNumber: '$(GitVersion.FullSemVer)'
+        ReleaseNumber: '$(fullSemVer)'
         Channel: 'Channels-21'
