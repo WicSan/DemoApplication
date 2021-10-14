@@ -13,8 +13,6 @@ pool:
 
 variables:
   imageName: 'demo-application'
-  GitVersion.FullSemVer: ''
-  fullSemVer: $[replace(variables['GitVersion.FullSemVer'], '+', '_')]
 
 steps:
 
@@ -42,16 +40,16 @@ steps:
     repository: '$(imageName)'
     command: 'buildAndPush'
     Dockerfile: 'DemoApplication/Dockerfile'
-    tags: '$(fullSemVer)'
+    tags: '$(compatibaleFullSemVer)'
 
 - task: HelmDeploy@0
   displayName: Helm package
   inputs:
     command: 'package'
     chartPath: 'deployment/helm/demo-application'
-    chartVersion: '$(fullSemVer)'
+    chartVersion: '$(compatibaleFullSemVer)'
     destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
-    arguments: '--app-version $(fullSemVer)'
+    arguments: '--app-version $(compatibaleFullSemVer)'
 
 - task: OctopusPush@4
   inputs:
