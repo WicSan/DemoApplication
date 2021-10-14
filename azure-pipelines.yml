@@ -41,8 +41,7 @@ stages:
   jobs:
   - job: Application
     variables:
-      dockertag: $[ replace(stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'], '+', '_') ]
-      fullSemVer: $[ stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'] ]
+      dockertag: $[ replace(variables['Build.BuildNumber'], '+', '_') ]
     steps:
     - task: Docker@2
       inputs:
@@ -57,7 +56,7 @@ stages:
       inputs:
         command: 'package'
         chartPath: 'deployment/helm/demo-application'
-        chartVersion: '$(FullSemVer)'
+        chartVersion: '$(Build.BuildNumber)'
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
         arguments: '--app-version $(dockertag)'
     - task: PublishBuildArtifacts@1
@@ -89,8 +88,6 @@ stages:
 
   - job: Release
     dependsOn: Push
-    variables:
-      fullSemVer: $[ stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'] ]
     steps:
     - checkout: none
     - task: OctopusCreateRelease@4
