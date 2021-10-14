@@ -41,7 +41,7 @@ stages:
   jobs:
   - job: Application
     variables:
-      dockertag: $[ stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'] ]
+      dockertag: $[ replace(stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'], '+', '_') ]
     steps:
     - task: Docker@2
       inputs:
@@ -54,14 +54,14 @@ stages:
   - job: Helm
     dependsOn: Application
     variables:
-      fullSemVer: $[ stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'] ]
+      dockertag: $[ replace(stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'], '+', '_') ]
     steps:
     - task: HelmDeploy@0
       displayName: Helm package
       inputs:
         command: 'package'
         chartPath: 'deployment/helm/demo-application'
-        chartVersion: '$(fullSemVer)'
+        chartVersion: '$(GitVersion.FullSemVer)'
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
         arguments: '--app-version $(dockertag)'
 
