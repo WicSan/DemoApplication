@@ -31,8 +31,8 @@ steps:
   displayName: Determine Version
 
 - bash: |
-      temp=$('$(GitVersion.FullSemVer)' | sed 's/+/_/g')
-      echo '##vso[task.setvariable variable=compatibaleFullSemVer]$temp'
+      temp=$(echo '$(GitVersion.FullSemVer)' | sed 's/+/_/g')
+      echo "##vso[task.setvariable variable=compatibaleFullSemVer]$temp"
 
 - task: Docker@2
   inputs:
