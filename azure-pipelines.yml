@@ -77,8 +77,8 @@ stages:
         downloadType: 'single'
         artifactName: 'helm'
         itemPattern: '**/*.tgz'
-        downloadPath: '$(System.ArtifactsDirectory)/helm'
-        
+        downloadPath: '$(System.ArtifactsDirectory)'
+
     - task: OctopusPush@4
       displayName: Ocotopus push
       inputs:
