@@ -60,10 +60,18 @@ stages:
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
         arguments: '--app-version $(dockertag)'
 
+    - publish: $(Build.ArtifactStagingDirectory)/helm
+      artifact: helm
+
 - stage: PushChartAndCreateRelease
   jobs:
   - job: Push
     steps:
+      - task: DownloadPipelineArtifact@2
+        inputs:
+          artifact: WebApp
+          patterns: '**/*.js'
+          path: $(Build.ArtifactStagingDirectory)/helm
       - task: OctopusPush@4
         displayName: Ocotopus push
         inputs:
