@@ -60,8 +60,11 @@ stages:
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
         arguments: '--app-version $(dockertag)'
 
-    - publish: $(Build.ArtifactStagingDirectory)/helm
-      artifact: helm
+    - task: PublishPipelineArtifact@1
+      inputs:
+        targetPath: '$(Build.ArtifactStagingDirectory)/helm'
+        artifact: 'helm'
+        publishLocation: 'pipeline'
 
 - stage: PushChartAndCreateRelease
   jobs:
