@@ -87,7 +87,9 @@ stages:
         chartVersion: '$(Build.BuildNumber)'
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
         arguments: '--app-version $(dockertag)'
+
     - task: PublishBuildArtifacts@1
+      displayName: Publish helm package
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/helm'
         ArtifactName: 'helm'
