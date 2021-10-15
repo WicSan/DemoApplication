@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MySql.EntityFrameworkCore.Extensions;
 
 namespace DemoApplication
 {
@@ -21,6 +22,9 @@ namespace DemoApplication
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            services.AddDbContext<WeatherForecastContext>();
+            // services.AddEntityFrameworkMySQL();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>

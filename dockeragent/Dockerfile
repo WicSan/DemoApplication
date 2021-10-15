@@ -40,6 +40,13 @@ RUN apt-get install helm
 #     sh -c "echo deb https://apt.octopus.com/ stable main > /etc/apt/sources.list.d/octopus.com.list" && \
 #     apt update && apt install octopuscli=$Octo
 
+# install npm
+ENV NODE_VERSION=14.18.0
+ENV NVM_DIR=/usr/local/nvm
+ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH
+RUN mkdir $NVM_DIR
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
 ARG TARGETARCH=amd64
 ARG AGENT_VERSION=2.185.1
 
