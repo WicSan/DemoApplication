@@ -42,7 +42,7 @@ service:
 
 appSettings:
   connectionStrings:
-    mySql: server=mysql;user=root;password=Passw0rd!;database=Demo
+    mySql: server=mysql.infrastructure.svc.cluster.local;user=root;password=Passw0rd!;database=Demo
 
 ingress:
   enabled: true
