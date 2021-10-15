@@ -40,6 +40,10 @@ service:
   type: ClusterIP
   port: 80
 
+appSettings:
+  connectionStrings:
+    mySql: server=;user=root;password=Passw0rd!;database=Demo
+
 ingress:
   enabled: true
   className: nginx
