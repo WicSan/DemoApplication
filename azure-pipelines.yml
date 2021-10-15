@@ -65,7 +65,7 @@ stages:
         command: 'publish'
         publishWebProjects: false
         projects: 'DemoApplication/*.csproj'
-        arguments: '--no-restore -o $(Build.ArtifactStagingDirectory)'
+        arguments: '--no-restore -o $(Build.ArtifactStagingDirectory)/publish'
         zipAfterPublish: false
         modifyOutputPath: false
 
@@ -76,6 +76,7 @@ stages:
         repository: '$(imageName)'
         command: 'buildAndPush'
         Dockerfile: 'DemoApplication/Dockerfile'
+        buildContext: '$(Build.ArtifactStagingDirectory)'
         tags: '$(dockertag)'
 
     - task: HelmDeploy@0
