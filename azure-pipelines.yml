@@ -43,6 +43,27 @@ stages:
     variables:
       dockertag: $[ replace(stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'], '+', '_') ]
     steps:
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'restore'
+        projects: 'DemoApplication/*.csproj'
+        feedsToUse: 'select'
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '*.csproj'
+        workingDirectory: 'DemoApplication/'
+    
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'publish'
+        publishWebProjects: false
+        projects: 'DemoApplication/*.csproj'
+        zipAfterPublish: false
+        modifyOutputPath: false
+
     - task: Docker@2
       inputs:
         containerRegistry: 'Local docker registry'
