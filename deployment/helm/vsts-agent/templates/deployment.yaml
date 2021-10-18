@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "vsts-agent.fullname" . }}
+  labels:
+    {{- include "vsts-agent.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "vsts-agent.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "vsts-agent.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: docker
+            mountPath: /var/run/docker.sock
+          env:
+            - name: AZP_URL
+              value: {{ .Values.agent.config.azpUrl }}
+            - name: AZP_AGENT_NAME
+              value: {{ .Values.agent.config.azpAgentName }}
+            - name: AZP_POOL
+              value: {{ .Values.agent.config.azpPool }}
+            - name: AZP_AGENT_DOWNGRADE_DISABLED
+              value: {{ .Values.agent.config.azpAgentDowngradeDisabled | quote }}
+            - name: AZP_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: azp-token
+                  key: token
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      
+      volumes:
+      - name: docker
+        hostPath:
+          path: /var/run/docker.sock
+      
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

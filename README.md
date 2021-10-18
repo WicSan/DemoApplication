@@ -10,7 +10,7 @@
 
 Build agent:
 ```
-docker build -t dockeragent:latest .
+docker build -t azure-agent:1.0.0 .
 ```
 
 Start docker agent **(This in the docker-compose as well)**:
