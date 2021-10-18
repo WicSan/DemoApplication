@@ -35,6 +35,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: ConnectionStrings__MySql
+              valueForm:
+                secretKeyRef:
+                  name: mysql-connectionstring
+                  key: connectionstring
               value: {{ .Values.appSettings.connectionStrings.mySql }}
           ports:
             - name: http
