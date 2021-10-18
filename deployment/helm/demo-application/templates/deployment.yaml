@@ -39,7 +39,6 @@ spec:
                 secretKeyRef:
                   name: mysql-connectionstring
                   key: connectionstring
-              value: {{ .Values.appSettings.connectionStrings.mySql }}
           ports:
             - name: http
               containerPort: 80
