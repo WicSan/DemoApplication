@@ -18,7 +18,6 @@ namespace DemoApplication
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            _logger.LogInformation(_configuration.GetConnectionString("MySql"));
             optionsBuilder.UseMySQL(_configuration.GetConnectionString("MySql"));
         }
 
