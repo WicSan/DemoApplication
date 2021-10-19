@@ -10,7 +10,8 @@
 
 Build agent:
 ```
-docker build -t azure-agent:1.0.0 .
+docker build -t registry.docker.local:5000/vsts-agent .
+docker push registry.docker.local:5000/vsts-agent
 ```
 
 Start docker agent **(This in the docker-compose as well)**:

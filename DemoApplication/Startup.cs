@@ -24,7 +24,6 @@ namespace DemoApplication
             services.AddControllersWithViews();
 
             services.AddDbContext<WeatherForecastContext>();
-            // services.AddEntityFrameworkMySQL();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
