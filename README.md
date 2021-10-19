@@ -68,6 +68,13 @@ To create the service account for octopus execute the following command in the o
 kubectl apply -f .\serviceaccount.yaml
 ```
 
+Get token:
+```
+kubectl get secret $(kubectl get serviceaccount demo-deployer -o jsonpath="{.secrets[0].name}" --namespace=default) -o jsonpath="{.data.token}" --namespace=default | base64 --decode
+```
+
+[Link to source](https://octopus.com/docs/infrastructure/deployment-targets/kubernetes-target)
+
 ## Octopus tencale
 
 Can be used as a worker:
