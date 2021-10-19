@@ -19,6 +19,11 @@ Start docker agent **(This in the docker-compose as well)**:
 docker run -e AZP_URL="https://dev-ops.azure.local/DefaultCollection" -e AZP_TOKEN="mpxqau7neidswiurn7hmmznvkufhvdttbvf54nvbnsyi6svxw3ia" -e AZP_AGENT_NAME=dockeragent -e AZP_POOL=Self-Hosted -e AZP_AGENT_DOWNGRADE_DISABLED=true -d -v /var/run/docker.sock:/var/run/docker.sock --network=repo_default --privileged --name dockeragent dockeragent:latest
 ```
 
+Or with helm:
+```
+helm upgrade vsts-agent .
+```
+
 [Link to source](https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops)
 
 ## Docker registry setup
