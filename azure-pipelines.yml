@@ -27,7 +27,7 @@ stages:
 
       - task: gitversion/execute@0
         displayName: Determine Version
-        name: Output
+        name: Versioning
       
       - task: Bash@3
         displayName: Print environment
@@ -39,7 +39,7 @@ stages:
   jobs:
   - job: Application
     variables:
-      dockertag: $[ replace(stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'], '+', '_') ]
+      Dockertag: $[ replace(stageDependencies.Setup.GitVersion.outputs['Versioning.GitVersion.FullSemVer'], '+', '_') ]
     steps:
 
     - task: DotNetCoreCLI@2
@@ -75,7 +75,7 @@ stages:
         command: 'buildAndPush'
         Dockerfile: 'DemoApplication/Dockerfile'
         buildContext: '$(Build.ArtifactStagingDirectory)'
-        tags: '$(dockertag)'
+        tags: '$(Dockertag)'
 
     - task: HelmDeploy@0
       displayName: Helm package
@@ -84,7 +84,7 @@ stages:
         chartPath: 'deployment/helm/demo-application'
         chartVersion: '$(Build.BuildNumber)'
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
-        arguments: '--app-version $(dockertag)'
+        arguments: '--app-version $(Dockertag)'
 
     - task: PublishBuildArtifacts@1
       displayName: Save helm package
