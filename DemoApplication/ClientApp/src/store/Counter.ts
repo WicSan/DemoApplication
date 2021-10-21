@@ -1,4 +1,5 @@
 import { Action, Reducer } from 'redux';
+import { ApplicationState } from '.';
 
 // -----------------
 // STATE - This defines the type of data maintained in the Redux store.
@@ -6,6 +7,9 @@ import { Action, Reducer } from 'redux';
 export interface CounterState {
     count: number;
 }
+
+// SELETORnpm
+export const selectCount = (state: ApplicationState) => state.counter?.count;
 
 // -----------------
 // ACTIONS - These are serializable (hence replayable) descriptions of state transitions.
