@@ -39,7 +39,7 @@ stages:
   jobs:
   - job: Application
     variables:
-      Dockertag: $[ replace(stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'], '+', '_') ]
+      dockertag: $[ replace(stageDependencies.Setup.Git.outputs['Output.GitVersion.FullSemVer'], '+', '_') ]
     steps:
 
     - task: DotNetCoreCLI@2
@@ -75,7 +75,7 @@ stages:
         command: 'buildAndPush'
         Dockerfile: 'DemoApplication/Dockerfile'
         buildContext: '$(Build.ArtifactStagingDirectory)'
-        tags: '$(Dockertag)'
+        tags: '$(dockertag)'
 
     - task: HelmDeploy@0
       displayName: Helm package
@@ -84,7 +84,7 @@ stages:
         chartPath: 'deployment/helm/demo-application'
         chartVersion: '$(Build.BuildNumber)'
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
-        arguments: '--app-version $(Dockertag)'
+        arguments: '--app-version $(dockertag)'
 
     - task: PublishBuildArtifacts@1
       displayName: Save helm package
