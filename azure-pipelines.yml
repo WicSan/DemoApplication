@@ -37,7 +37,7 @@ stages:
 
 - stage: Build
   jobs:
-  - job: Application
+  - job: BuildAndTest
     variables:
       Dockertag: $[ replace(stageDependencies.Setup.GitVersion.outputs['Versioning.GitVersion.FullSemVer'], '+', '_') ]
     steps:
@@ -56,6 +56,14 @@ stages:
         projects: 'DemoApplication/*.csproj'
         arguments: '--no-restore --configuration $(BuildConfiguration)'
         workingDirectory: 'DemoApplication/'
+
+    - task: DotNetCoreCLI@2
+      displayName: DotNet test
+      inputs:
+        command: 'test'
+        projects: 'DemoApplication.Tests/*.csproj'
+        arguments: '--no-restore'
+        workingDirectory: 'DemoApplication.Tests/'
     
     - task: DotNetCoreCLI@2
       displayName: DotNet publish
