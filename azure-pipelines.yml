@@ -35,9 +35,9 @@ stages:
           targetType: 'inline'
           script: env | sort
 
-- stage: Build
+- stage: BuildAndTest
   jobs:
-  - job: BuildAndTest
+  - job: Build
     variables:
       Dockertag: $[ replace(stageDependencies.Setup.GitVersion.outputs['Versioning.GitVersion.FullSemVer'], '+', '_') ]
     steps:
@@ -56,8 +56,11 @@ stages:
         projects: 'DemoApplication/*.csproj'
         arguments: '--no-restore --configuration $(BuildConfiguration)'
         workingDirectory: 'DemoApplication/'
-        
+
   - job: Test
+    dependsOn: Build
+    workspace:
+      clean: resources
     steps:
     - task: DotNetCoreCLI@2
       displayName: DotNet test
@@ -68,6 +71,9 @@ stages:
         workingDirectory: 'DemoApplication.Tests/'
     
   - job: Publish
+    dependsOn: Build
+    workspace:
+      clean: resources
     steps:
     - task: DotNetCoreCLI@2
       displayName: DotNet publish
@@ -104,6 +110,7 @@ stages:
         arguments: '--app-version $(Dockertag)'
 
   - job: Octopus
+    dependsOn: Helm
     steps:
     - task: OctopusPush@4
       displayName: Ocotopus push
