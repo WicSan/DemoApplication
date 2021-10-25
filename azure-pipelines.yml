@@ -56,7 +56,9 @@ stages:
         projects: 'DemoApplication/*.csproj'
         arguments: '--no-restore --configuration $(BuildConfiguration)'
         workingDirectory: 'DemoApplication/'
-
+        
+  - job: Test
+    steps:
     - task: DotNetCoreCLI@2
       displayName: DotNet test
       inputs:
@@ -65,6 +67,8 @@ stages:
         arguments: '--no-restore'
         workingDirectory: 'DemoApplication.Tests/'
     
+  - job: Publish
+    steps:
     - task: DotNetCoreCLI@2
       displayName: DotNet publish
       inputs:
@@ -85,6 +89,11 @@ stages:
         buildContext: '$(Build.ArtifactStagingDirectory)'
         tags: '$(Dockertag)'
 
+- stage: Release
+  jobs:
+  - job: Helm
+    steps:
+    - checkout: none
     - task: HelmDeploy@0
       displayName: Helm package
       inputs:
@@ -94,27 +103,9 @@ stages:
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
         arguments: '--app-version $(Dockertag)'
 
-    - task: PublishBuildArtifacts@1
-      displayName: Save helm package
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/helm'
-        ArtifactName: 'helm'
-        publishLocation: 'Container'
-
-- stage: Octopus
-  jobs:
-  - job: Push
+  - job: Octopus
     steps:
     - checkout: none
-    - task: DownloadBuildArtifacts@0
-      displayName: Download helm package
-      inputs:
-        buildType: 'current'
-        downloadType: 'single'
-        artifactName: 'helm'
-        itemPattern: '**/*.tgz'
-        downloadPath: '$(System.ArtifactsDirectory)'
-
     - task: OctopusPush@4
       displayName: Ocotopus push
       inputs:
@@ -123,12 +114,9 @@ stages:
         Package: '$(Build.ArtifactStagingDirectory)/helm/charts/*.tgz'
         Replace: 'true'
 
-  - job: CreateRelease
-    dependsOn: Push
-    steps:
     - checkout: none
     - task: OctopusCreateRelease@4
-      displayName: Master release
+      displayName: Create Master release
       condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
       inputs:
         OctoConnectedServiceName: 'Local octopus server'
@@ -139,7 +127,7 @@ stages:
         Channel: 'Channels-1'
         
     - task: OctopusCreateRelease@4
-      displayName: Feature release
+      displayName: Create Feature release
       condition: not(eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       inputs:
         OctoConnectedServiceName: 'Local octopus server'
