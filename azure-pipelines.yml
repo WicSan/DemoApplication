@@ -62,6 +62,7 @@ stages:
     workspace:
       clean: resources
     steps:
+    - checkout: none
     - task: DotNetCoreCLI@2
       displayName: DotNet test
       inputs:
@@ -75,6 +76,7 @@ stages:
     workspace:
       clean: resources
     steps:
+    - checkout: none
     - task: DotNetCoreCLI@2
       displayName: DotNet publish
       inputs:
