@@ -105,7 +105,6 @@ stages:
 
   - job: Octopus
     steps:
-    - checkout: none
     - task: OctopusPush@4
       displayName: Ocotopus push
       inputs:
@@ -114,7 +113,6 @@ stages:
         Package: '$(Build.ArtifactStagingDirectory)/helm/charts/*.tgz'
         Replace: 'true'
 
-    - checkout: none
     - task: OctopusCreateRelease@4
       displayName: Create Master release
       condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
