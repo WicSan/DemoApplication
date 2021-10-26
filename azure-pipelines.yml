@@ -31,10 +31,7 @@ stages:
         displayName: Determine Version
         name: Versioning
 
-      - bash: |
-          #!/bin/bash
-          fullSemVer = $(GitVersion.FullSemVer)
-          echo '##vso[task.setvariable variable=Dockertag]${fullSemVer//+/"_"}'
+      - bash: echo '##vso[task.setvariable variable=Dockertag]${GITVERSION_FULLSEMVER//+/"_"}'
         displayName: Set Dockertag
       
       - task: Bash@3
