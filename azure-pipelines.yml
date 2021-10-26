@@ -44,7 +44,7 @@ stages:
       displayName: DotNet restore
       inputs:
         command: 'restore'
-        projects: 'DemoApplication/*.csproj'
+        projects: 'DemoApplication'
         feedsToUse: 'select'
 
     - task: DotNetCoreCLI@2
@@ -94,7 +94,7 @@ stages:
 
 - stage: Release
   jobs:
-  - job: Helm
+  - job: CreateAndPushRelease
     steps:
     - checkout: none
     - task: HelmDeploy@0
@@ -106,9 +106,6 @@ stages:
         destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
         arguments: '--app-version $(Dockertag)'
 
-  - job: Octopus
-    dependsOn: Helm
-    steps:
     - task: OctopusPush@4
       displayName: Ocotopus push
       inputs:
