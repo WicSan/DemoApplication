@@ -41,7 +41,7 @@ stages:
   jobs:
   - job: Build
     steps:
-
+    - checkout: none
     - task: DotNetCoreCLI@2
       displayName: DotNet restore
       inputs:
@@ -117,6 +117,8 @@ stages:
 
 - stage: Release
   displayName: 'Create & Push helm package to octopus'
+  variables:
+    Dockertag: $[ replace(stageDependencies.Setup.GitVersion.outputs['Versioning.GitVersion.FullSemVer'], '+', '_') ]
   jobs:
   - job: CreateAndPushRelease
     steps:
@@ -127,7 +129,7 @@ stages:
         command: 'package'
         chartPath: 'deployment/helm/demo-application'
         chartVersion: '$(Build.BuildNumber)'
-        destination: '$(Build.ArtifactStagingDirectory)/helm/charts'
+        destination: '$(Build.BinariesDirectory)/helm/charts'
         arguments: '--app-version $(Dockertag)'
 
     - task: OctopusPush@4
@@ -135,7 +137,7 @@ stages:
       inputs:
         OctoConnectedServiceName: 'Local octopus server'
         Space: 'Spaces-1'
-        Package: '$(Build.ArtifactStagingDirectory)/helm/charts/*.tgz'
+        Package: '$(Build.BinariesDirectory)/helm/charts/*.tgz'
         Replace: 'true'
 
     - task: OctopusCreateRelease@4
