@@ -50,11 +50,13 @@ stages:
         feedsToUse: 'select'
 
     - task: Npm@1
+      displayName: 'Npm install'
       inputs:
         command: 'install'
         workingDir: 'DemoApplication/ClientApp'
 
     - task: Npm@1
+      displayName: 'Npm build'
       inputs:
         command: 'custom'
         workingDir: 'DemoApplication/ClientApp'
@@ -110,7 +112,7 @@ stages:
         repository: '$(ImageName)'
         command: 'buildAndPush'
         Dockerfile: 'DemoApplication/Dockerfile'
-        buildContext: '$(Build.ArtifactStagingDirectory)'
+        buildContext: '$(Build.BinariesDirectory)'
         tags: '$(Dockertag)'
 
 - stage: Release
