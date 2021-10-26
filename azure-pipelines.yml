@@ -38,8 +38,6 @@ stages:
 - stage: BuildAndTest
   jobs:
   - job: Build
-    variables:
-      Dockertag: $[ replace(stageDependencies.Setup.GitVersion.outputs['Versioning.GitVersion.FullSemVer'], '+', '_') ]
     steps:
 
     - task: DotNetCoreCLI@2
@@ -66,11 +64,11 @@ stages:
       inputs:
         command: 'test'
         projects: 'DemoApplication.Tests/*.csproj'
-        arguments: '--no-restore'
-        workingDirectory: 'DemoApplication.Tests/'
     
   - job: Publish
     dependsOn: Build
+    variables:
+      Dockertag: $[ replace(stageDependencies.Setup.GitVersion.outputs['Versioning.GitVersion.FullSemVer'], '+', '_') ]
     steps:
     - checkout: none
     - task: DotNetCoreCLI@2
