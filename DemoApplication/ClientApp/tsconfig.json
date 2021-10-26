@@ -12,6 +12,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
+    "types": ["jest"],
     "lib": [
       "es2015",
       "dom"
@@ -19,7 +20,5 @@
     "skipLibCheck": false,
     "noFallthroughCasesInSwitch": true
   },
-  "include": [
-    "src"
-  ]
+  "include": [ "src" ]
 }

@@ -1,4 +1,3 @@
-// test-utils.jsx
 import React, { ReactElement } from 'react'
 import { configureStore, EnhancedStore } from '@reduxjs/toolkit'
 import { render, RenderResult} from '@testing-library/react'

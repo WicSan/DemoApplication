@@ -1,8 +1,9 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
 import App from './App';
+import './custom.css'
+import { render } from '@testing-library/react';
 
 it('renders without crashing', () => {
     const storeFake = (state: any) => ({
@@ -13,10 +14,9 @@ it('renders without crashing', () => {
     });
     const store = storeFake({}) as any;
 
-    ReactDOM.render(
-        <Provider store={store}>
+    render(<Provider store={store}>
             <MemoryRouter>
-                <App/>
+              <App/>
             </MemoryRouter>
-        </Provider>, document.createElement('div'));
+        </Provider>);
 });
