@@ -63,6 +63,7 @@ stages:
       displayName: DotNet test
       inputs:
         command: 'test'
+        arguments: '--no-restore'
         projects: 'DemoApplication.Tests/*.csproj'
     
   - job: Publish
