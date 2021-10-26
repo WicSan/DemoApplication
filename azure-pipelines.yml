@@ -17,6 +17,7 @@ variables:
 
 stages:
 - stage: Setup
+  displayName: 'Setup & Run GitVersion'
   jobs:
     - job: GitVersion
       steps:
@@ -35,7 +36,8 @@ stages:
           targetType: 'inline'
           script: env | sort
 
-- stage: BuildAndTest
+- stage: Build
+  displayName: 'Build & Test'
   jobs:
   - job: Build
     steps:
@@ -46,6 +48,17 @@ stages:
         command: 'restore'
         projects: 'DemoApplication'
         feedsToUse: 'select'
+
+    - task: Npm@1
+      inputs:
+        command: 'install'
+        workingDir: 'DemoApplication/ClientApp'
+
+    - task: Npm@1
+      inputs:
+        command: 'custom'
+        workingDir: 'DemoApplication/ClientApp'
+        customCommand: 'run build'
 
     - task: DotNetCoreCLI@2
       displayName: DotNet build
@@ -78,9 +91,17 @@ stages:
         command: 'publish'
         publishWebProjects: false
         projects: 'DemoApplication/*.csproj'
-        arguments: '--no-restore --configuration $(BuildConfiguration) -o $(Build.ArtifactStagingDirectory)/publish'
+        arguments: '--no-restore --configuration $(BuildConfiguration) -o $(Build.BinariesDirectory)/publish'
         zipAfterPublish: false
         modifyOutputPath: false
+
+    - task: CopyFiles@2
+      displayName: 'Publish frontend'
+      inputs:
+        SourceFolder: 'DemoApplication/ClientApp/build'
+        Contents: '**'
+        TargetFolder: '$(Build.BinariesDirectory)/publish/wwwroot'
+        CleanTargetFolder: true
 
     - task: Docker@2
       displayName: Docker build and publish
@@ -93,6 +114,7 @@ stages:
         tags: '$(Dockertag)'
 
 - stage: Release
+  displayName: 'Create & Push helm package to octopus'
   jobs:
   - job: CreateAndPushRelease
     steps:

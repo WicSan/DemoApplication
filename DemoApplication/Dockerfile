@@ -4,4 +4,5 @@ WORKDIR /app
 EXPOSE 80
 
 COPY publish/ ./
+
 ENTRYPOINT ["dotnet", "DemoApplication.dll"]
