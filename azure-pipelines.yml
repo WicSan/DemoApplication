@@ -31,7 +31,9 @@ stages:
         displayName: Determine Version
         name: Versioning
 
-      - bash: echo '##vso[task.setvariable variable=Dockertag]${GITVERSION_FULLSEMVER//+/"_"}'
+      - bash: |
+          DOCKERTAG=${GITVERSION_FULLSEMVER//+/"_"}
+          echo '##vso[task.setvariable variable=Dockertag]$DOCKERTAG'
         displayName: Set Dockertag
       
       - task: Bash@3
