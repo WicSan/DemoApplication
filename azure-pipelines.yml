@@ -14,6 +14,7 @@ pool:
 variables:
   ImageName: 'demo-application'
   BuildConfiguration: 'release'
+  Dockertag: ''
 
 stages:
 - stage: Setup
@@ -29,6 +30,11 @@ stages:
       - task: gitversion/execute@0
         displayName: Determine Version
         name: Versioning
+
+      - bash: |
+          fullSemVer = $(GitVersion.FullSemVer)
+          echo '##vso[task.setvariable variable=Dockertag]${fullSemVer//+/"_"}'
+        displayName: Set Dockertag
       
       - task: Bash@3
         displayName: Print environment
@@ -83,8 +89,6 @@ stages:
     
   - job: Publish
     dependsOn: Build
-    variables:
-      Dockertag: $[ replace(stageDependencies.Setup.GitVersion.outputs['Versioning.GitVersion.FullSemVer'], '+', '_') ]
     steps:
     - checkout: none
     - task: DotNetCoreCLI@2
@@ -119,8 +123,6 @@ stages:
   displayName: 'Create & Push helm package to octopus'
   jobs:
   - job: CreateAndPushRelease
-    variables:
-      Dockertag: $[ replace(stageDependencies.Setup.GitVersion.outputs['Versioning.GitVersion.FullSemVer'], '+', '_') ]
     steps:
     - checkout: none
     - task: HelmDeploy@0
