@@ -118,7 +118,7 @@ stages:
 - stage: Release
   displayName: 'Create & Push helm package to octopus'
   variables:
-    Dockertag: $[ replace(stageDependencies.Setup.GitVersion.outputs['Versioning.GitVersion.FullSemVer'], '+', '_') ]
+    Dockertag: $[ replace(variables['Build.BuildNumber'], '+', '_') ]
   jobs:
   - job: CreateAndPushRelease
     steps:
