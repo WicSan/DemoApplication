@@ -33,7 +33,7 @@ stages:
 
       - bash: |
           DOCKERTAG=${GITVERSION_FULLSEMVER//+/"_"}
-          echo '##vso[task.setvariable variable=Dockertag]$DOCKERTAG'
+          echo "##vso[task.setvariable variable=Dockertag]$DOCKERTAG"
         displayName: Set Dockertag
       
       - task: Bash@3
