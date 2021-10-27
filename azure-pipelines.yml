@@ -121,7 +121,10 @@ stages:
         tags: '$(Dockertag)'
 
 - stage: Release
-  dependsOn: Setup
+  dependsOn:
+  - Setup
+  - Build
+
   variables:
     Dockertag: $[ stageDependencies.Setup.GitVersion.outputs['docker.tag'] ]
   displayName: 'Create & Push helm package to octopus'
