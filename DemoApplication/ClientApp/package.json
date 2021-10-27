@@ -52,7 +52,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "lint": "eslint ./src/**/*.ts ./src/**/*.tsx"
+    "lint": "eslint ./src/**/*.ts ./src/**/*.tsx",
+    "cypress": "npx cypress open"
   },
   "eslintConfig": {
     "extends": [

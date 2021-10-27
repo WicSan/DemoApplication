@@ -7,7 +7,7 @@ const Counter: FC<{}> = () => {
     const count = useSelector(selectCount);
 
     return (
-        <React.Fragment>
+        <div id="increment">
             <h1>Counter</h1>
 
             <p>This is a simple example of a React component.</p>
@@ -19,7 +19,7 @@ const Counter: FC<{}> = () => {
                 onClick={() => { dispatch(actionCreators.increment()) }}>
                 Increment
             </button>
-        </React.Fragment>
+        </div>
     );
 }
 
