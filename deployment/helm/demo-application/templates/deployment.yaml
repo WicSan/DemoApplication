@@ -45,12 +45,12 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /health
               port: http
             initialDelaySeconds: 25
           readinessProbe:
             httpGet:
-              path: /
+              path: /ready
               port: http
             initialDelaySeconds: 10
           resources:

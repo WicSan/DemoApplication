@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
@@ -24,6 +26,10 @@ namespace DemoApplication
             services.AddControllersWithViews();
 
             services.AddDbContext<WeatherForecastContext>();
+
+            services.AddTransient<MySqlHealthCheck>();
+            services.AddHealthChecks()
+                .AddCheck<MySqlHealthCheck>("mySql", tags: new List<string> { "/health" });
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -54,6 +60,9 @@ namespace DemoApplication
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+
+                endpoints.MapHealthChecks("/health");
+                endpoints.MapHealthChecks("/ready");
             });
 
             app.UseSpa(spa =>
