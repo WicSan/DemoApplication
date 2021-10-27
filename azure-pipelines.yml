@@ -143,6 +143,7 @@ stages:
 
     - task: OctopusPush@4
       displayName: Ocotopus push
+      continueOnError: false
       inputs:
         OctoConnectedServiceName: 'Local octopus server'
         Space: 'Spaces-1'
@@ -150,6 +151,7 @@ stages:
         Replace: 'true'
 
     - task: OctopusCreateRelease@4
+      continueOnError: false
       displayName: Create Master release
       condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
       inputs:
@@ -161,6 +163,7 @@ stages:
         Channel: 'Channels-1'
         
     - task: OctopusCreateRelease@4
+      continueOnError: false
       displayName: Create Feature release
       condition: not(eq(variables['Build.SourceBranch'], 'refs/heads/master'))
       inputs:
