@@ -159,6 +159,7 @@ stages:
         ProjectName: 'Projects-1'
         ReleaseNumber: '$(Build.BuildNumber)'
         Channel: 'Channels-1'
+        AdditionalArguments: '--packageVersion $(Build.BuildNumber)'
         
     - task: OctopusCreateRelease@4
       continueOnError: false
